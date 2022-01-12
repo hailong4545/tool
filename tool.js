@@ -7,26 +7,24 @@ const data = {s: 'ok', d: {
 
 function convertBFS(data, result) {
     for(key in data) {
+        result[key] = {};
+
         if (typeof data[key] == 'string' || typeof data[key] == 'number' || typeof data[key] == 'boolean') {
-            result[key] = {};
             result[key]['type'] = typeof data[key];
         }
         else {
             if (data[key].length === undefined) {
-                result[key] = {};
                 result[key]['type'] = 'json';
                 result[key]['property'] = {}; 
                 convertBFS(data[key], result[key]['property']);
             }
             else {
-                result[key] = {};
                 result[key]['type'] = 'ref';
                 convertBFS({'item': data[key][0]}, result[key]);
             }
         }
     }
-    result.example = data;
-    return result;
+    return {'inputs': result, 'example': data};
 }
 
 console.log(convertBFS(data, {}));
