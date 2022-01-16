@@ -1,0 +1,807 @@
+components:
+  securitySchemes:
+    APIKeyHeader:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Api key
+    MyOAuth2:
+      type: oauth2
+      description: OAuth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://example.com/api/oauth/dialog
+          tokenUrl: https://example.com/api/oauth/token
+          scopes:
+            write: Order write, account write
+            read: Order read, order write
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    DefaultSuccessResponse:
+      type: object
+      properties:
+        s:
+          type: string
+        ec:
+          type: integer
+          format: int32
+        em:
+          type: string
+        d:
+          type: string
+    PrecheckSuccessResponse:
+      type: object
+      properties:
+        s:
+          type: string
+        ec:
+          type: integer
+          format: int32
+        em:
+          type: string
+        d:
+          type: object
+          properties:
+            tokenid:
+              type: string
+            transactionId:
+              type: string
+security:
+  - bearerAuth: []
+openapi: 3.0.0
+info:
+  title: DataFeed api
+  description: ''
+  termsOfService: http://example.com/terms
+  contact:
+    name: Fss
+    email: Fss@gmail.com
+    url: http://github.com/theo4u
+  license:
+    name: OpenApi 3
+    url: ''
+  version: 1.0.0
+servers:
+  - url: http://localhost:1337/
+  - url: http://192.168.1.147/
+externalDocs:
+  url: http://Fss@gmail.com
+tags:
+  - name: Index
+    description: index
+  - name: Filter
+    description: filter
+  - name: Instruments
+    description: Instruments
+  - name: Tradingview
+    description: trading-view
+  - name: Translog
+    description: translog
+  - name: Config
+    description: config
+    
+paths:
+  /config:
+    post:
+      summary: Hủy lệnh chuyển tiền ngoài giờ
+      description: Hủy lệnh chuyển tiền ngoài giờ
+      tags:
+        - Config
+      parameters: []
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                key:
+                  type: string
+                  # required: true
+                enableLogMessage:
+                  type: boolean
+                enablePushChange:
+                  type: boolean
+    get:
+      summary: Hủy lệnh chuyển tiền ngoài giờ
+      description: Hủy lệnh chuyển tiền ngoài giờ
+      tags:
+        - Config
+      parameters: []
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /config/stockFilter:
+    post:
+      summary: Hủy lệnh chuyển tiền ngoài giờ
+      description: Hủy lệnh chuyển tiền ngoài giờ
+      tags:
+        - Config
+      parameters: []
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                key:
+                  type: string
+                  # required: true
+                intervalUpdate:
+                  type: integer
+                filterList:
+                  type: array
+                  items:
+                    type: number
+    
+    get:
+      summary: Hủy lệnh chuyển tiền ngoài giờ
+      description: Hủy lệnh chuyển tiền ngoài giờ
+      tags:
+        - Config
+      parameters: []
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /instruments/filter:
+    get:
+      summary: Hủy lệnh chuyển tiền ngoài giờ
+      description: Hủy lệnh chuyển tiền ngoài giờ
+      tags:
+        - Filter
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /instruments/filterList:
+    get:
+      summary: Lấy danh sách bộ lọc filter mã chứng khoán
+      description: Lấy danh sách bộ lọc filter mã chứng khoán
+      tags:
+        - Filter
+      parameters: []
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+          
+  /quotes:
+    get:
+      summary: Lấy thông tin stockinfor theo mã chứng khoán.
+      description: Lấy thông tin stockinfor theo mã chứng khoán.
+      tags:
+        - Instruments
+      parameters:
+        - in : query
+          name: symbols
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /mapping:
+    get:
+      summary: Lấy danh sách mã và sàn
+      description: Lấy danh sách mã và sàn
+      tags:
+        - Instruments
+      parameters: []
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /depth:
+    get:
+      summary: Get depth
+      description: Get depth
+      tags:
+        - Instruments
+      parameters:
+        - in : query
+          name: symbol
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /symbol_info:
+    get:
+      summary: get-symbol-info
+      description: get-symbol-info
+      tags:
+        - Instruments
+      parameters:
+        - in : query
+          name: group
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /groups:
+    get:
+      summary: get-group
+      description: get-group
+      tags:
+        - Instruments
+      parameters: []
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /instruments:
+    get:
+      summary: Lấy dữ liệu cache stockinfo
+      description: Lấy dữ liệu cache stockinfo
+      tags:
+        - Instruments
+      parameters:
+        - in : query
+          name: symbols
+          required: true
+          schema:
+            type: string
+        
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  
+  /oddlotInstruments:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Instruments
+      parameters:
+        - in : query
+          name: symbols
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /instruments/{indexCode}:
+    get:
+      summary: Lấy dữ liệu danh sách mã theo chỉ số index
+      description: Lấy dữ liệu danh sách mã theo chỉ số index
+      tags:
+        - Instruments
+      parameters:
+        - in : path
+          name: indexCode
+          required: true
+          schema:
+            type: string
+            
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+          
+  /index:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Index
+      parameters: []
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /indexsnaps:
+    get:
+      summary: Lấy dữ liệu thông tin hiện tại của index
+      description: Lấy dữ liệu thông tin hiện tại của index
+      tags:
+        - Index
+      parameters:
+        - in : query
+          name: marketCode
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /indexsnaps/{marketCode}:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Index
+      parameters:
+        - in : path
+          name: marketCode
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /indexs/{marketCode}:
+    get:
+      summary: Lấy dữ liệu cache index
+      description: Lấy dữ liệu cache index
+      tags:
+        - Index
+      parameters:
+        - in : path
+          name: marketCode
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+          
+  /indexs/chart:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Index
+      parameters:
+        - in : query
+          name: floorcode
+          required: true
+          schema:
+            type: string
+        - in : query
+          name: from
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+          
+  /values/chart:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Index
+      parameters:
+        - in : query
+          name: floorcode
+          required: true
+          schema:
+            type: string
+        - in : query
+          name: from
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /indexs/getTime:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Index
+      parameters:
+        - in : query
+          name: floorcode
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /tvchart/config:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Tradingview
+      parameters: []
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /tvchart/symbols:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Tradingview
+      parameters:
+        - in : query
+          name: symbol
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /tvchart/search:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Tradingview
+      parameters:
+        - in : query
+          name: limit
+          required: true
+          schema:
+            type: integer
+        - in : query
+          name: query
+          required: true
+          schema:
+            type: string
+        - in : query
+          name: type
+          required: true
+          schema:
+            type: string
+        - in : query
+          name: exchange
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /tvchart/time:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Tradingview
+      parameters:
+        - in : query
+          name: floorcode
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /tvchart/history:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Tradingview
+      parameters:
+        - in : query
+          name: symbol
+          required: true
+          schema:
+            type: string
+        - in : query
+          name: resolution
+          required: true
+          schema:
+            type: string
+        - in : query
+          name: to
+          required: true
+          schema:
+            type: integer
+        - in : query
+          name: from
+          required: false
+          schema:
+            type: string
+        - in : query
+          name: limit
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /tvchart/timescale_marks:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Tradingview
+      parameters: []
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+          
+  /translogsnaps/{symbol}:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Translog
+      parameters:
+        - in : path
+          name: symbol
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+  
+  /oltranslogsnaps/{symbol}:
+    get:
+      summary: Lấy dữ liệu cache oddlot stockinfo
+      description: Lấy dữ liệu cache oddlot stockinfo
+      tags:
+        - Translog
+      parameters:
+        -  in : path
+           name: symbol
+           required: true
+           schema:
+            type: string
+      responses:
+        '200':
+          description: Done/Success (partial)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DefaultSuccessResponse'
+        '404':
+          description: Resource not found
+        '500':
+          description: Error
+      
+                    
+      
+                
